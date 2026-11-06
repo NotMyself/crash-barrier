@@ -2,10 +2,13 @@
 #Requires -RunAsAdministrator
 # Unregisters the proxy (regsvr32 /u -> DllUnregisterServer) and verifies by read-back.
 # Always restores the Stadium CLSID to the Line 6 DLL in case install.ps1 -Stealth was used.
-# Also the recovery step for a poisoned saved connection in Rocksmith+ (or edit
-# Documents\My Games\Rocksmith+\state.cfg directly: asiodevicename / inputdevicename / outputdevicename).
-param([string] $DllPath = (Join-Path (Split-Path $PSScriptRoot -Parent) 'build\release\CrashBarrier_x64.dll'))
+# Finds the DLL next to this script (downloaded package) or in build\release (source checkout).
+param([string] $DllPath = '')
 $ErrorActionPreference = 'Stop'
+if (-not $DllPath) {
+    $DllPath = if (Test-Path "$PSScriptRoot\CrashBarrier_x64.dll") { "$PSScriptRoot\CrashBarrier_x64.dll" }
+               else { Join-Path (Split-Path $PSScriptRoot -Parent) 'build\release\CrashBarrier_x64.dll' }
+}
 $DllPath = (Resolve-Path $DllPath).Path
 
 $inproc = 'HKLM:\SOFTWARE\Classes\CLSID\{bf6ad246-4cb9-426c-b41d-520e50f0d983}\InprocServer32'

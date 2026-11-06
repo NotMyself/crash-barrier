@@ -28,6 +28,13 @@ runs are in [`docs/DIAGNOSIS.md`](docs/DIAGNOSIS.md); the dated log for Line 6 t
 The driver-object offsets the proxy logs for forensics are specific to driver 0.0.3.15. A new driver
 version needs the reproduction run below before trusting the shim.
 
+## Download
+
+Prebuilt packages are on the [Releases](https://github.com/NotMyself/crash-barrier/releases) page:
+`CrashBarrier-<version>-x64.zip` with the DLL, its PDB, the test host, the install scripts and an
+install guide (the same text as [`docs/INSTALL.md`](docs/INSTALL.md)). Every push to `main` also
+produces the package as a CI artifact; tags of the form `vX.Y.Z` publish a release.
+
 ## Build
 
 Requirements: Visual Studio 2022 or later with the C++ x64 toolset, CMake 3.25+, Ninja, PowerShell 7.
@@ -35,7 +42,12 @@ No runtime dependencies; the DLL links the CRT statically.
 
 ```powershell
 .\scripts\build.ps1          # -> build\release\CrashBarrier_x64.dll, asiohost_test.exe, FaultyDriver_x64.dll
+.\scripts\test.ps1           # hardware-free self-tests (load failure, SEH catch + minidump, version stamp)
+.\scripts\package.ps1        # -> dist\CrashBarrier-<version>-x64.zip + SHA256SUMS.txt
 ```
+
+The version comes from git tags (`scripts\version.ps1`): `1.2.3` on a `v1.2.3` tag, `1.2.3-dev.N+sha`
+after it. It is stamped into the DLL's version resource and the first line of every trace.
 
 ## Install
 

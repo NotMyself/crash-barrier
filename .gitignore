@@ -1,5 +1,6 @@
 # Build output (CMake presets write to build/<preset>)
 build/
+dist/
 out/
 cmake-build-*/
 CMakeUserPresets.json

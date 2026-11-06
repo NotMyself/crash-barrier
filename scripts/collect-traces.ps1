@@ -1,5 +1,6 @@
 #Requires -Version 7
-# Copies the newest proxy trace log(s) and any minidumps into traces/<tag>_<timestamp>.*
+# Copies the newest proxy trace log(s) and any minidumps into traces\<tag>_<timestamp>.*
+# (the repo's traces\ folder in a source checkout, or a traces\ folder next to this script otherwise).
 # Example: .\collect-traces.ps1 -Tag ableton
 param(
     [Parameter(Mandatory)] [string] $Tag,
@@ -7,7 +8,9 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $src = Join-Path $env:LOCALAPPDATA 'CrashBarrier'
-$dst = Join-Path (Split-Path $PSScriptRoot -Parent) 'traces'
+$repoTraces = Join-Path (Split-Path $PSScriptRoot -Parent) 'traces'
+$dst = if (Test-Path $repoTraces) { $repoTraces } else { Join-Path $PSScriptRoot 'traces' }
+New-Item $dst -ItemType Directory -Force | Out-Null
 $logs = Get-ChildItem $src -Filter 'trace_*.log' | Sort-Object LastWriteTime -Descending | Select-Object -First $Count
 if (-not $logs) { throw "no trace logs in $src" }
 foreach ($log in $logs) {
@@ -17,5 +20,5 @@ foreach ($log in $logs) {
     Get-ChildItem $src -Filter "fault_${pid_}_*.dmp" | ForEach-Object {
         Copy-Item $_.FullName (Join-Path $dst "${Tag}_${stamp}_$($_.Name)")
     }
-    Write-Output "collected $($log.Name) -> ${Tag}_${stamp}.log"
+    Write-Output "collected $($log.Name) -> $dst\${Tag}_${stamp}.log"
 }

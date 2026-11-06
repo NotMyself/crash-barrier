@@ -17,6 +17,9 @@ shown wrong and are corrected in `DIAGNOSIS.md`.
 ```powershell
 .\scripts\build.ps1                 # configure + build release (enters the VS dev shell; needs CMake, Ninja, MSVC)
 .\scripts\build.ps1 -Config debug
+.\scripts\test.ps1                  # hardware-free self-tests; this is what CI runs (exit 1 on any failure)
+.\scripts\package.ps1               # dist\CrashBarrier-<version>-x64.zip, same as the CI artifact / release asset
+.\scripts\version.ps1               # semver from git tags; build.ps1 stamps it into the DLL and trace header
 .\scripts\install.ps1 -Stealth      # elevated. Proxy answers for the Stadium's own CLSID; hosts need no changes
 .\scripts\install.ps1               # elevated. Separate "ASIO Stadium (Proxy)" device instead
 .\scripts\uninstall.ps1             # elevated. Restores the Line 6 registration; always verify by read-back
