@@ -1,0 +1,37 @@
+# Build output (CMake presets write to build/<preset>)
+build/
+out/
+cmake-build-*/
+CMakeUserPresets.json
+
+# MSVC / linker intermediates if anything is built outside build/
+*.obj
+*.pdb
+*.ilk
+*.exp
+*.lib
+*.dll
+*.exe
+*.idb
+*.pch
+*.tlog
+
+# IDE
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.VC.db
+*.VC.opendb
+
+# Crash evidence: collected into traces/ by scripts/collect-traces.ps1, never committed
+traces/*
+!traces/.gitkeep
+*.dmp
+*.log
+
+# OS cruft
+Thumbs.db
+desktop.ini
+.DS_Store
