@@ -51,6 +51,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           $v = '${{ steps.version.outputs.version }}'
-          $pre = $v.Contains('-') ? '--prerelease' : ''
-          gh release create '${{ github.ref_name }}' dist/*.zip dist/SHA256SUMS.txt `
-            --title "CrashBarrier $v" --generate-notes $pre
+          # pwsh does not glob for native commands: resolve the assets here, and only add flags that apply
+          $assets = @(Get-ChildItem dist/*.zip, dist/SHA256SUMS.txt | ForEach-Object FullName)
+          $ghArgs = @('release', 'create', '${{ github.ref_name }}') + $assets + @('--title', "CrashBarrier $v", '--generate-notes')
+          if ($v.Contains('-')) { $ghArgs += '--prerelease' }
+          gh @ghArgs
+          exit $LASTEXITCODE
